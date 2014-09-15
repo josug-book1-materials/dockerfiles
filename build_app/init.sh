@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 cd /root/openstack-sample-app
 sed -i "s/^rest_host = .*/rest_host = $REST_PORT_5555_TCP_ADDR/" endpoint.conf
