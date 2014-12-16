@@ -4,8 +4,8 @@ MAINTAINER Etsuji Nakai
 RUN yum -y install epel-release; \
     yum -y install git gcc python-devel python-crypto python-pip mysql-devel
 RUN cd /root; \
-    git clone https://github.com/irixjp/openstack-sample-app.git; \
-    cd /root/openstack-sample-app; \
+    git clone https://github.com/josug-book1-materials/sample-app.git; \
+    cd /root/sample-app; \
     git checkout v1.0; \
     pip install -r server-setup/requirements.txt
 
