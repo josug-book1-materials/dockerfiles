@@ -1,0 +1,57 @@
+---
+#
+# Usage: ansible-playbook -i inventory -e target=web|app|dbs -e docker_user=username playbook.yml
+#
+
+- hosts: "{{ target }}"
+  vars:
+    spec:
+      web:
+        image: "{{ docker_user }}/web:ver1.0"
+        ports: "80:80"
+        expose:
+        - 80
+      app:
+        image: "{{ docker_user }}/app:ver1.0"
+        ports: "5555:5555"
+        expose:
+        - 5555
+      dbs:
+        image: "{{ docker_user }}/dbs:ver1.0"
+        ports: "3306:3306"
+        expose:
+        - 3306
+
+  tasks:
+  - name: install required packages
+    yum:
+      state: present
+      name: "{{ item }}"
+    with_items:
+    - python-pip
+    when: target in ["web","app","dbs"]
+
+  - name: install python client for docker
+    pip:
+      state: present
+      name: "{{ item }}"
+    with_items:
+    - docker-py
+    when: target in ["web","app","dbs"]
+
+  - name: docker run "{{ target }}"
+    docker:
+      state: present
+      image: "{{ spec[target].image }}"
+      name: "{{ target }}"
+      ports: "{{ spec[target].ports }}"
+      env: "REST_PORT_5555_TCP_ADDR={{ app|default('127.0.0.1') }},DB_PORT_3306_TCP_ADDR={{ dbs|default('127.0.0.1') }}"
+      stdin_open: yes
+      tty: yes
+      publish_all_ports: yes
+      expose: "{{ spec[target].expose }}"
+    when: target in ["web","app","dbs"]
+
+#
+# [EOF]
+#
