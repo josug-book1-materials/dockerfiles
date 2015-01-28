@@ -41,6 +41,7 @@
 
   - name: docker run "{{ target }}"
     docker:
+      docker_api_version: "1.15"
       state: present
       image: "{{ spec[target].image }}"
       name: "{{ target }}"
